@@ -24,16 +24,10 @@ export default function AddIncome() {
     };
 
     try {
-      // Ambil data yang sudah ada
       const storedData = await AsyncStorage.getItem("datakeluarga");
       const data = storedData ? JSON.parse(storedData) : [];
-
-      // Tambahkan data baru
       data.push(newIncome);
-
-      // Simpan kembali ke AsyncStorage
       await AsyncStorage.setItem("datakeluarga", JSON.stringify(data));
-
       Alert.alert("Data Saved", "Pendapatan berhasil disimpan.");
     } catch (error) {
       Alert.alert("Error", "Gagal menyimpan data");
@@ -42,9 +36,9 @@ export default function AddIncome() {
 
   const handleDateChange = (_event: any, selectedDate: Date | undefined) => {
     if (selectedDate !== undefined) {
-      setDate(selectedDate); // Set the selected date
+      setDate(selectedDate);
     }
-    setShowDatePicker(false); // Close the date picker
+    setShowDatePicker(false);
   };
 
   return (
@@ -81,8 +75,8 @@ export default function AddIncome() {
         style={styles.input}
         value={date.toLocaleDateString()}
         placeholder="Pilih tanggal"
-        onTouchStart={() => setShowDatePicker(true)} // Use onTouchStart instead of onFocus
-        editable={false} // Make it non-editable to avoid typing
+        onTouchStart={() => setShowDatePicker(true)}
+        editable={false}
       />
 
       {showDatePicker && (
@@ -94,7 +88,9 @@ export default function AddIncome() {
         />
       )}
 
-      <Button title="Simpan" onPress={handleSave} />
+      <View style={styles.buttonContainer}>
+        <Button title="Simpan" onPress={handleSave} color="#6a11cb" />
+      </View>
     </View>
   );
 }
@@ -102,22 +98,37 @@ export default function AddIncome() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: "#f5f5f5", // Warna latar belakang
+    flex: 1, // Menggunakan seluruh layar
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#6a11cb", // Warna judul
   },
   label: {
     fontSize: 18,
     marginBottom: 10,
+    color: "#333", // Warna label
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8, // Sudut yang lebih melengkung
     marginBottom: 20,
+    backgroundColor: "#fff", // Warna latar belakang input
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2, // Efek bayangan untuk Android
+  },
+  buttonContainer: {
+    marginTop: 20,
+    borderRadius: 8,
+    overflow: "hidden", // Menambahkan efek melingkar pada tombol
   },
 });

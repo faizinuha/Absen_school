@@ -1,12 +1,15 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Text, View } from 'react-native';
-
+import { StyleSheet, Image, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { useState } from 'react'; // Impor useState untuk mengelola state
 import { Collapsible } from '@/components/Collapsible';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function ProfileScreen() {
+  const [income, setIncome] = useState(''); // State untuk nominal pendapatan
+  const [showInput, setShowInput] = useState(false); // State untuk mengelola visibilitas input
+
   return (
     <ParallaxScrollView>
       <ThemedView style={styles.titleContainer}>
@@ -24,7 +27,9 @@ export default function ProfileScreen() {
         </View>
       </View>
       
-      <ThemedText>This is your profile. You can view and edit your information here.</ThemedText>
+      <ThemedText style={styles.introText}>
+        This is your profile. You can view and edit your information here.
+      </ThemedText>
       
       <Collapsible title="Personal Information">
         <ThemedText>
@@ -36,26 +41,54 @@ export default function ProfileScreen() {
       </Collapsible>
 
       <Collapsible title="Settings">
-        <ThemedText>
-          You can change your preferences and update settings from this section.
-        </ThemedText>
+        <TouchableOpacity onPress={() => setShowInput(!showInput)} style={styles.button}>
+          <Text style={styles.buttonText}>Toggle Input</Text>
+        </TouchableOpacity>
+        
+        {showInput && (
+          <View style={styles.settingsContainer}>
+            <Text style={styles.label}>Masukan Nomer</Text>
+            <TextInput
+              style={styles.input}
+              value={income}
+              onChangeText={setIncome}
+              placeholder="Masukkan Nomer"
+              keyboardType="numeric"
+            />
+          </View>
+        )}
       </Collapsible>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+    paddingVertical: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
+  },
   profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
     alignSelf: 'center',
     marginBottom: 20,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   profileInfo: {
     flexDirection: 'row',
@@ -69,9 +102,53 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#333',
   },
   email: {
     fontSize: 16,
+    textDecorationLine: "underline",
     color: '#808080',
+  },
+  introText: {
+    fontSize: 16,
+    marginHorizontal: 20,
+    textAlign: 'center',
+    color: '#444',
+  },
+  settingsContainer: {
+    marginVertical: 10,
+    padding: 15,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#007BFF', // Warna latar belakang tombol
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
