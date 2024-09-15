@@ -1,19 +1,31 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+// Hapus useColorScheme untuk dark mode secara manual
+// import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  // Set default dark mode
+  const colorScheme = 'dark'; // Set ke dark mode secara manual
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
+        tabBarActiveTintColor: Colors[colorScheme].tint, // Gunakan skema dark
+        tabBarStyle: {
+          backgroundColor: Colors[colorScheme].background, // Background untuk dark mode
+        },
+        headerShown: true,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: 'bold',
+        },
+        tabBarIconStyle: {
+          fontSize: 24,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -26,9 +38,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
+          title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Addicome"
+        options={{
+          title: 'Add Income',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'add-sharp' : 'add-circle-outline'} color={color} />
           ),
         }}
       />
