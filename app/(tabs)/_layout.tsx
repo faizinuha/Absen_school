@@ -52,7 +52,17 @@ export default function TabLayout() {
               <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
             ),
           }}
-        />
+      />
+        <Tabs.Screen
+          name="setting/settings"
+          options={{
+            title: 'settings',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'settings-sharp' : 'settings-outline'} color={color} />
+            ),
+          }}
+      />
+    
     </Tabs>
   );
 }

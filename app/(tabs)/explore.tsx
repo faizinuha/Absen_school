@@ -1,15 +1,11 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import { useState } from 'react'; // Impor useState untuk mengelola state
+import { StyleSheet, Image, Text, View } from 'react-native';
 import { Collapsible } from '@/components/Collapsible';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function ProfileScreen() {
-  const [income, setIncome] = useState(''); // State untuk nominal pendapatan
-  const [showInput, setShowInput] = useState(false); // State untuk mengelola visibilitas input
-
   return (
     <ParallaxScrollView>
       <ThemedView style={styles.titleContainer}>
@@ -27,7 +23,7 @@ export default function ProfileScreen() {
         </View>
       </View>
       
-      <ThemedText style={styles.introText}>
+      <ThemedText>
         This is your profile. You can view and edit your information here.
       </ThemedText>
       
@@ -41,40 +37,46 @@ export default function ProfileScreen() {
       </Collapsible>
 
       <Collapsible title="Settings">
-        <TouchableOpacity onPress={() => setShowInput(!showInput)} style={styles.button}>
-          <Text style={styles.buttonText}>Toggle Input</Text>
-        </TouchableOpacity>
-        
-        {showInput && (
-          <View style={styles.settingsContainer}>
-            <Text style={styles.label}>Masukan Nomer</Text>
-            <TextInput
-              style={styles.input}
-              value={income}
-              onChangeText={setIncome}
-              placeholder="Masukkan Nomer"
-              keyboardType="numeric"
-            />
-          </View>
-        )}
+        <ThemedText>
+          You can change your preferences and update settings from this section.
+        </ThemedText>
       </Collapsible>
     </ParallaxScrollView>
   );
 }
+ 
+//  fungsi seetting next up
+// <Collapsible title="Settings">
+// <TouchableOpacity onPress={() => setShowInput(!showInput)} style={styles.button}>
+//   <Text style={styles.buttonText}>Toggle Input</Text>
+// </TouchableOpacity>
 
+// {showInput && (
+//   <View style={styles.settingsContainer}>
+//     <Text style={styles.label}>Masukan Nomer</Text>
+//     <TextInput
+//       style={styles.input}
+//       value={income}
+//       onChangeText={setIncome}
+//       placeholder="Masukkan Nomer"
+//       keyboardType="numeric"
+//     />
+//   </View>
+// )}
+// </Collapsible>
 const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 20,
     paddingVertical: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff', // Warna latar belakang header
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    elevation: 5,
+    elevation: 5, // Efek bayangan untuk Android
   },
   profileImage: {
     width: 100,
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: '#fff', // Warna border gambar profil
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -102,10 +104,10 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#333', // Warna nama pengguna
   },
   email: {
-    fontSize: 16,
+    fontSize: 10,
     textDecorationLine: "underline",
     color: '#808080',
   },
@@ -113,42 +115,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 20,
     textAlign: 'center',
-    color: '#444',
+    color: '#444', // Warna teks pengantar
   },
-  settingsContainer: {
+  collapsible: {
     marginVertical: 10,
-    padding: 15,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f9f9f9', // Latar belakang untuk collapsible
     borderRadius: 10,
+    padding: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: '#007BFF', // Warna latar belakang tombol
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
