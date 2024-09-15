@@ -1,26 +1,45 @@
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
-
+// Definisikan tipe untuk familyMembers
+interface FamilyMember {
+  nama: string;
+  Addincome: string; // Sesuaikan dengan struktur yang benar
+  description: string;
+  date: string;
+}
 
 export default function FamilyFinanceScreen() {
-  const familyMembers = [
-    { name: "Ayah - Budi", income: 5000, expenses: 3000 },
-    { name: "Ibu - Siti", income: 4500, expenses: 2500 },
-    { name: "Kakak - Rani", income: 2500, expenses: 1500 },
-    { name: "Adik - Andi", income: 1500, expenses: 500 },
-  ];
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]); // Berikan tipe data yang benar
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // State untuk menangani error
 
+  // Fungsi untuk mengambil data dari AsyncStorage
+  const fetchFamilyData = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem("datakeluarga");
+      const data = storedData ? JSON.parse(storedData) : [];
+      setFamilyMembers(data);
+      setErrorMessage(null); // Clear error if successful
+    } catch (error) {
+      console.error("Gagal mengambil data keluarga:", error);
+      setErrorMessage("Gagal mengambil data keluarga"); // Set error message
+    }
+  };
+
+  useEffect(() => {
+    fetchFamilyData(); // Ambil data saat komponen pertama kali dirender
+  }, []);
+
+  // Menghitung total pemasukan, pengeluaran, dan saldo
   const totalIncome = familyMembers.reduce(
-    (sum, member) => sum + member.income,
+    (sum, member) => sum + parseFloat(member.Addincome), // Sesuaikan dengan nama properti yang benar
     0
   );
-  const totalExpenses = familyMembers.reduce(
-    (sum, member) => sum + member.expenses,
-    0
-  );
+  const totalExpenses = 0; // Jika belum ada pengeluaran, kamu bisa set ke 0
   const totalBalance = totalIncome - totalExpenses;
 
   return (
@@ -36,15 +55,25 @@ export default function FamilyFinanceScreen() {
         <ThemedText type="subtitle">Saldo: Rp {totalBalance}</ThemedText>
       </ThemedView>
 
+      {errorMessage && ( // Jika ada error, tampilkan dalam elemen Text
+        <View>
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        </View>
+      )}
+
       <ThemedView style={styles.familyContainer}>
-        {familyMembers.map((member, index) => (
-          <View key={index} style={styles.memberCard}>
-            <Text style={styles.memberName}>{member.name}</Text>
-            <Text>Pemasukan: Rp {member.income}</Text>
-            <Text>Pengeluaran: Rp {member.expenses}</Text>
-            <Text>Saldo: Rp {member.income - member.expenses}</Text>
-          </View>
-        ))}
+        {familyMembers.length > 0 ? (
+          familyMembers.map((member, index) => (
+            <View key={index} style={styles.memberCard}>
+              <Text style={styles.memberName}>{member.nama}</Text>
+              <Text>Pemasukan: Rp {member.Addincome}</Text> {/* Sesuaikan dengan nama properti yang benar */}
+              <Text>Keterangan: {member.description}</Text>
+              <Text>Tanggal: {member.date}</Text>
+            </View>
+          ))
+        ) : (
+          <Text>Belum ada data pendapatan.</Text>
+        )}
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -70,5 +99,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+  },
+  errorText: {
+    color: "red", // Tampilkan error dalam warna merah
+    textAlign: "center",
+    marginVertical: 10,
   },
 });

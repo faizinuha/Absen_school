@@ -36,15 +36,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="Addicome"
         options={{
           title: 'Add Income',
@@ -53,6 +44,15 @@ export default function TabLayout() {
           ),
         }}
       />
+        <Tabs.Screen
+          name="explore"
+          options={{
+            title: 'Profile',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            ),
+          }}
+        />
     </Tabs>
   );
 }
