@@ -1,70 +1,96 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Image } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import ProfileScreen from "./explore";
 
-// Definisikan tipe untuk familyMembers
-interface FamilyMember {
-  nama: string;
-  Addincome: string;
-  description: string;
+// Definisikan tipe untuk absen siswa
+interface StudentAttendance {
+  name: string;
+  status: string;
+  description?: string; // optional untuk alasan izin/sakit
   date: string;
 }
 
-export default function FamilyFinanceScreen() {
-  // Data manual untuk keluarga
-  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([
+export default function SchoolAttendanceScreen() {
+  // Data manual untuk absensi siswa
+  const [attendanceList, setAttendanceList] = useState<StudentAttendance[]>([
     {
-      nama: "Ayah",
-      Addincome: "5000000",
-      description: "Gaji bulanan",
+      name: "Ahmad",
+      status: "Hadir",
       date: "2024-09-01",
     },
     {
-      nama: "Ibu",
-      Addincome: "2000000",
-      description: "Pendapatan usaha",
-      date: "2024-09-02",
+      name: "Budi",
+      status: "Izin",
+      description: "Keperluan keluarga",
+      date: "2024-09-01",
     },
     {
-      nama: "Anak",
-      Addincome: "1000000",
-      description: "Uang saku",
-      date: "2024-09-03",
+      name: "Citra",
+      status: "Sakit",
+      description: "Demam",
+      date: "2024-09-01",
     },
   ]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    // Tidak ada pengambilan data, data manual sudah diset di state
-    setErrorMessage(null);
+    setErrorMessage(null); // Tidak ada error untuk saat ini
   }, []);
 
-  // Menghitung total pemasukan, pengeluaran, dan saldo
-  const totalIncome = familyMembers.reduce(
-    (sum, member) => sum + parseFloat(member.Addincome),
-    0
-  );
-  const totalExpenses = 0; // Jika belum ada pengeluaran, bisa diset ke 0
-  const totalBalance = totalIncome - totalExpenses;
+  // Hitung total kehadiran, izin, sakit, dan alfa
+  const totalHadir = attendanceList.filter(
+    (student) => student.status === "Hadir"
+  ).length;
+  const totalIzin = attendanceList.filter(
+    (student) => student.status === "Izin"
+  ).length;
+  const totalSakit = attendanceList.filter(
+    (student) => student.status === "Sakit"
+  ).length;
+  const totalAlfa = attendanceList.filter(
+    (student) => student.status === "Alfa"
+  ).length;
 
   return (
     <ParallaxScrollView>
+      {/* Gambar Header */}
+      <Image
+        source={require("@/assets/images/smk_al_ahzah.jpeg")} // Perbaiki jalur sesuai struktur proyek Anda
+        style={styles.headerImage}
+        resizeMode="cover"
+      />
+      {/* Gambar absensi siswa */}
       <ThemedView style={styles.header}>
+      {/* <Image source={require('@/assets/images/profile.png')} style={styles.headerImage} /> */}
         <ThemedText type="title" style={styles.headerTitle}>
-          Catatan Keuangan Keluarga
+          Absensi Sekolah
         </ThemedText>
-        <ThemedText type="subtitle" style={styles.headerText}>
-          Total Pemasukan: Rp {totalIncome}
-        </ThemedText>
-        <ThemedText type="subtitle" style={styles.headerText}>
-          Total Pengeluaran: Rp {totalExpenses}
-        </ThemedText>
-        <ThemedText type="subtitle" style={styles.headerText}>
-          Saldo: Rp {totalBalance}
-        </ThemedText>
+
+        {/* Kotak-kotak fitur untuk status absensi */}
+        <View style={styles.featureBoxContainer}>
+          <View style={styles.featureBox}>
+            <Text style={styles.featureText}>Hadir</Text>
+            <Text style={styles.featureValue}>{totalHadir}</Text>
+          </View>
+
+          <View style={styles.featureBox}>
+            <Text style={styles.featureText}>Izin</Text>
+            <Text style={styles.featureValue}>{totalIzin}</Text>
+          </View>
+
+          <View style={styles.featureBox}>
+            <Text style={styles.featureText}>Sakit</Text>
+            <Text style={styles.featureValue}>{totalSakit}</Text>
+          </View>
+          <View style={styles.featureBox}>
+            <Text style={styles.featureText}>Alfa</Text>
+            <Text style={styles.featureValue}>{totalAlfa}</Text>
+          </View>
+        </View>
       </ThemedView>
 
       {errorMessage && (
@@ -73,22 +99,22 @@ export default function FamilyFinanceScreen() {
         </View>
       )}
 
-      <ThemedView style={styles.familyContainer}>
-        {familyMembers.length > 0 ? (
-          familyMembers.map((member, index) => (
-            <View key={index} style={styles.memberCard}>
-              <Text style={styles.memberName}>{member.nama}</Text>
-              <Text style={styles.memberInfo}>
-                Pemasukan: Rp {member.Addincome}
-              </Text>
-              <Text style={styles.memberInfo}>
-                Keterangan: {member.description}
-              </Text>
-              <Text style={styles.memberInfo}>Tanggal: {member.date}</Text>
+      <ThemedView style={styles.attendanceContainer}>
+        {attendanceList.length > 0 ? (
+          attendanceList.map((student, index) => (
+            <View key={index} style={styles.studentCard}>
+              <Text style={styles.studentName}>{student.name}</Text>
+              <Text style={styles.studentInfo}>Status: {student.status}</Text>
+              {student.description && (
+                <Text style={styles.studentInfo}>
+                  Alasan: {student.description}
+                </Text>
+              )}
+              <Text style={styles.studentInfo}>Tanggal: {student.date}</Text>
             </View>
           ))
         ) : (
-          <Text>Belum ada data pendapatan.</Text>
+          <Text>Belum ada data absensi.</Text>
         )}
       </ThemedView>
     </ParallaxScrollView>
@@ -96,47 +122,92 @@ export default function FamilyFinanceScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    padding: 20,
-    backgroundColor: "#6a11cb", // Gradien warna untuk header
-    borderRadius: 25, // Hapus "px", gunakan angka saja
-    alignItems: "center",
-    marginBottom: 20,
+  // Gaya untuk gambar header
+  headerImage: {
+    width: "100%", // Ganti ke 100% untuk sesuai dengan lebar kontainer
+    height: 50, // Atur tinggi gambar sesuai kebutuhan
+    resizeMode: "cover", // Agar gambar tidak terdistorsi
+    borderRadius: 20, // Jarak radius gambar header
+    shadowColor: "#000", // Warna bayangan
+    shadowOffset: { width: 0, height: 2 }, // Offset bayangan
+    shadowOpacity: 0.1, // Opacity bayangan
+    shadowRadius: 100, // Radius bayangan
+    elevation: 3, // Untuk Android
   },
-  
+
+  header: {
+    right: 10,
+    paddingHorizontal: 22, // Padding horizontal
+    paddingVertical: 22, // Padding vertikal
+    width: "109%", // Lebar 100% dari kontainer induk
+    backgroundColor: "#000", // Warna hitam untuk header
+    borderRadius: 15 | 16 | 11,
+    alignItems: "center",
+    marginBottom: 10, // Jarak bawah dari header ke konten lainnya
+  },
+
   headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
     marginBottom: 10,
   },
-  headerText: {
-    fontSize: 18,
-    color: "#fff",
-    marginBottom: 5,
+
+  // Kotak fitur
+  featureBoxContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "120%",
+    padding: 10,
+    marginTop: 20,
   },
-  familyContainer: {
+  featureBox: {
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 15,
+    width: "20%",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 3, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
+    margin: 10,
+    gap: 0,
+  },
+  featureText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#333",
+  },
+  featureValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
+  attendanceContainer: {
     paddingHorizontal: 20,
   },
-  memberCard: {
-    padding: 20,
+  studentCard: {
+    padding: 15,
     backgroundColor: "#f8f9fa",
     marginVertical: 10,
     borderRadius: 15,
-    shadowColor: "#000", // Menambahkan bayangan ke kartu
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 3, // Untuk shadow di Android
+    elevation: 3,
   },
-  memberName: {
+  studentName: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#333", // Warna teks lebih gelap
+    color: "#333",
   },
-  memberInfo: {
-    fontSize: 16,
+  studentInfo: {
+    fontSize: 15,
     color: "#555",
     marginBottom: 5,
   },
