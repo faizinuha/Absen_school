@@ -2,33 +2,40 @@ import React, { useState } from "react";
 import { StyleSheet, View, TextInput, Button, Text, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from 'expo-image-picker';
+import { Picker } from "@react-native-picker/picker";
 
-export default function AddIncome() {
+export default function AddLeave() {
   const [nama, setNama] = useState("");
-  const [income, setIncome] = useState("");
+  const [reason, setReason] = useState("Sakit");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [imageUri, setImageUri] = useState<string | null>(null); // Specify the type
+
+  const reasons = ["Sakit", "Izin Keluarga", "Acara Penting", "Lainnya"];
 
   const handleSave = async () => {
-    if (nama === "" || income === "" || description === "") {
-      Alert.alert("Error", "Please fill out all fields");
+    if (nama === "" || description === "" || imageUri === null) {
+      Alert.alert("Error", "Please fill out all fields and upload a photo.");
       return;
     }
 
-    const newIncome = {
+    const newLeave = {
       nama,
-      income,
+      reason,
       description,
       date: date.toLocaleDateString(),
+      image: imageUri,
     };
 
     try {
-      const storedData = await AsyncStorage.getItem("datakeluarga");
+      const storedData = await AsyncStorage.getItem("dataizin");
       const data = storedData ? JSON.parse(storedData) : [];
-      data.push(newIncome);
-      await AsyncStorage.setItem("datakeluarga", JSON.stringify(data));
-      Alert.alert("Data Saved", "Pendapatan berhasil disimpan.");
+      data.push(newLeave);
+      await AsyncStorage.setItem("dataizin", JSON.stringify(data));
+      Alert.alert("Data Saved", "Izin berhasil disimpan.");
+      resetForm(); 
     } catch (error) {
       Alert.alert("Error", "Gagal menyimpan data");
     }
@@ -41,9 +48,39 @@ export default function AddIncome() {
     setShowDatePicker(false);
   };
 
+  const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      Alert.alert("Mohon IzinKan Akses Kamera!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync();
+    if (!result.canceled) {
+      const selectedImage = result.assets[0]; // Access the first asset
+      if (selectedImage) {
+        const selectedImageDate = new Date(selectedImage.uri);
+        if (date.toLocaleDateString() !== selectedImageDate.toLocaleDateString()) {
+          Alert.alert("Error", "Foto harus diambil pada hari yang sama dengan izin.");
+        } else {
+          setImageUri(selectedImage.uri); // Set the image URI
+        }
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setNama("");
+    setReason("Sakit");
+    setDescription("");
+    setDate(new Date());
+    setImageUri(null);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tambah Pendapatan</Text>
+      <Text style={styles.title}> Izin Tidak Masuk Sekolah[👋]</Text>
 
       <Text style={styles.label}>Nama</Text>
       <TextInput
@@ -53,21 +90,23 @@ export default function AddIncome() {
         placeholder="Masukkan nama"
       />
 
-      <Text style={styles.label}>Nominal Pendapatan</Text>
-      <TextInput
+      <Text style={styles.label}>Alasan Tidak Masuk</Text>
+      <Picker
+        selectedValue={reason}
         style={styles.input}
-        value={income}
-        onChangeText={setIncome}
-        placeholder="Masukkan nominal"
-        keyboardType="numeric"
-      />
+        onValueChange={(itemValue) => setReason(itemValue)}
+      >
+        {reasons.map((reason, index) => (
+          <Picker.Item key={index} label={reason} value={reason} />
+        ))}
+      </Picker>
 
       <Text style={styles.label}>Keterangan</Text>
       <TextInput
         style={styles.input}
         value={description}
         onChangeText={setDescription}
-        placeholder="Keterangan pendapatan"
+        placeholder="Keterangan izin"
       />
 
       <Text style={styles.label}>Tanggal</Text>
@@ -89,6 +128,11 @@ export default function AddIncome() {
       )}
 
       <View style={styles.buttonContainer}>
+        <Button title="Upload Foto Bukti" onPress={pickImage} color="#6a11cb" />
+        {imageUri && <Text style={styles.imageText}>Foto terpilih: {imageUri}</Text>}
+      </View>
+
+      <View style={styles.buttonContainer}>
         <Button title="Simpan" onPress={handleSave} color="#6a11cb" />
       </View>
     </View>
@@ -98,37 +142,36 @@ export default function AddIncome() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#f5f5f5", // Warna latar belakang
-    flex: 1, // Menggunakan seluruh layar
+    backgroundColor: "#f5f5f5",
+    flex: 1,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: "#6a11cb", // Warna judul
+    color: "#6a11cb",
   },
   label: {
     fontSize: 18,
     marginBottom: 10,
-    color: "#333", // Warna label
+    color: "#333",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
-    borderRadius: 8, // Sudut yang lebih melengkung
+    borderRadius: 8,
     marginBottom: 20,
-    backgroundColor: "#fff", // Warna latar belakang input
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2, // Efek bayangan untuk Android
+    backgroundColor: "#fff",
   },
   buttonContainer: {
     marginTop: 20,
     borderRadius: 8,
-    overflow: "hidden", // Menambahkan efek melingkar pada tombol
+    overflow: "hidden",
+  },
+  imageText: {
+    marginTop: 10,
+    textAlign: "center",
   },
 });

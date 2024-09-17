@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+
 import { Colors } from '@/constants/Colors';
 // Hapus useColorScheme untuk dark mode secara manual
 // import { useColorScheme } from '@/hooks/useColorScheme';
@@ -38,7 +39,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="Addicome"
         options={{
-          title: 'Add Income',
+          title: 'Izin',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'add-sharp' : 'add-circle-outline'} color={color} />
           ),
@@ -49,7 +50,7 @@ export default function TabLayout() {
           options={{
             title: 'Profile',
             tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+              <TabBarIcon name={focused ? 'star-outline' : 'star-outline'} color={color} />
             ),
           }}
       />

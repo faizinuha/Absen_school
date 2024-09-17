@@ -15,6 +15,16 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
     npx expo start
    ```
+3. install Componene dropdown And All
+ ```
+   npm install @react-native-async-storage/async-storage
+   npm install @react-native-community/datetimepicker
+   npm install @react-native-picker/picker
+```
+so if all is installed continue to npx expo start oh forgot to download on the expo demo cellphone Go play store or link below
+```
+Play Store:https://play.google.com/store/apps/details?id=host.exp.exponent&hl=id
+```
 
 In the output, you'll find options to open the app in a
 
@@ -48,3 +58,8 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+```
+Thank you Good luck and Mahiro Dev Here Thank you👋
+
+```
