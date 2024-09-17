@@ -23,7 +23,7 @@ export default function SchoolAttendanceScreen() {
     },
     {
       name: "Budi",
-      status: "Izin",
+      status: "Sakit",
       description: "Keperluan keluarga",
       date: "2024-09-01",
     },

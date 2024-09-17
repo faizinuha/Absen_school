@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { Image } from "react-native";
 import { StyleSheet, View, TextInput, Button, Text, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import DateTimePicker from "@react-native-community/datetimepicker";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
+import { hideAsync } from "expo-splash-screen";
+import { Route } from "expo-router/build/Route";
 
 export default function AddLeave() {
   const [nama, setNama] = useState("");
@@ -16,7 +19,7 @@ export default function AddLeave() {
   const reasons = ["Sakit", "Izin Keluarga", "Acara Penting", "Lainnya"];
 
   const handleSave = async () => {
-    if (nama === "" || description === "" || imageUri === null) {
+    if (nama === "" || null === "" || imageUri === null) {
       Alert.alert("Error", "Please fill out all fields and upload a photo.");
       return;
     }
@@ -34,8 +37,12 @@ export default function AddLeave() {
       const data = storedData ? JSON.parse(storedData) : [];
       data.push(newLeave);
       await AsyncStorage.setItem("dataizin", JSON.stringify(data));
-      Alert.alert("Data Saved", "Izin berhasil disimpan.");
-      resetForm(); 
+      Alert.alert(
+        "Data Saved",
+        "Data Di Simpan Kami Akan Memastikan Bahwa Anda2 Benar2 Saki👋."
+      );
+      resetForm();
+      // navigator.navigator("/app/(tabs)/index.tsx");
     } catch (error) {
       Alert.alert("Error", "Gagal menyimpan data");
     }
@@ -49,7 +56,8 @@ export default function AddLeave() {
   };
 
   const pickImage = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
       Alert.alert("Mohon IzinKan Akses Kamera!");
@@ -59,14 +67,7 @@ export default function AddLeave() {
     const result = await ImagePicker.launchImageLibraryAsync();
     if (!result.canceled) {
       const selectedImage = result.assets[0]; // Access the first asset
-      if (selectedImage) {
-        const selectedImageDate = new Date(selectedImage.uri);
-        if (date.toLocaleDateString() !== selectedImageDate.toLocaleDateString()) {
-          Alert.alert("Error", "Foto harus diambil pada hari yang sama dengan izin.");
-        } else {
-          setImageUri(selectedImage.uri); // Set the image URI
-        }
-      }
+      setImageUri(selectedImage.uri); // Set the image URI
     }
   };
 
@@ -94,20 +95,24 @@ export default function AddLeave() {
       <Picker
         selectedValue={reason}
         style={styles.input}
-        onValueChange={(itemValue) => setReason(itemValue)}
-      >
+        onValueChange={(itemValue) => setReason(itemValue)}>
         {reasons.map((reason, index) => (
           <Picker.Item key={index} label={reason} value={reason} />
         ))}
       </Picker>
 
-      <Text style={styles.label}>Keterangan</Text>
-      <TextInput
-        style={styles.input}
-        value={description}
-        onChangeText={setDescription}
-        placeholder="Keterangan izin"
-      />
+      {/* Menampilkan input keterangan jika alasan adalah "Acara Penting" atau "Lainnya" */}
+      {(reason === "Acara Penting" || reason === "Lainnya") && (
+        <>
+          <Text style={styles.label}>Keterangan</Text>
+          <TextInput
+            style={styles.input}
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Keterangan izin"
+          />
+        </>
+      )}
 
       <Text style={styles.label}>Tanggal</Text>
       <TextInput
@@ -126,14 +131,15 @@ export default function AddLeave() {
           onChange={handleDateChange}
         />
       )}
-
       <View style={styles.buttonContainer}>
-        <Button title="Upload Foto Bukti" onPress={pickImage} color="#6a11cb" />
-        {imageUri && <Text style={styles.imageText}>Foto terpilih: {imageUri}</Text>}
+        <Button title="Simpan" onPress={handleSave} color="#6a11cb" />
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button title="Simpan" onPress={handleSave} color="#6a11cb" />
+        {imageUri && (
+          <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+        )}
+        <Button title="Upload Foto Bukti" onPress={pickImage} color="#6a11cb"/>
       </View>
     </View>
   );
@@ -173,5 +179,14 @@ const styles = StyleSheet.create({
   imageText: {
     marginTop: 10,
     textAlign: "center",
+  },
+  imagePreview: {
+    width: 120, // Atur lebar sesuai kebutuhan Anda
+    height: 120, // Atur tinggi sesuai kebutuhan Anda
+    borderRadius: 19, // At
+    marginTop: 5,
+    marginBottom: 15,
+    right: 60,
+    alignSelf: "center",
   },
 });
