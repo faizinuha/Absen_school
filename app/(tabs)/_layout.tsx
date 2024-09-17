@@ -28,6 +28,15 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
+          name="home/dashboard"
+          options={{
+            title: 'dashboards',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'settings-sharp' : 'settings-outline'} color={color} />
+            ),
+          }}
+      />
+      <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
@@ -63,7 +72,7 @@ export default function TabLayout() {
             ),
           }}
       />
-    
+        
     </Tabs>
   );
 }
