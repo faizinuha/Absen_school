@@ -2,7 +2,7 @@
   "expo": {
     "name": "Keluarga",
     "slug": "Keluarga",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/profile.png",
     "scheme": "myapp",
@@ -10,6 +10,7 @@
     "splash": {
       "image": "./assets/images/profile.png",
       "resizeMode": "contain",
+      "BorderRadius": "20px",
       "backgroundColor": "#ffffff"
     },
     "ios": {

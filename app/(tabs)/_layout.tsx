@@ -63,7 +63,7 @@ export default function TabLayout() {
             ),
           }}
       />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="setting/settings"
           options={{
             title: 'settings',
@@ -71,7 +71,7 @@ export default function TabLayout() {
               <TabBarIcon name={focused ? 'settings-sharp' : 'settings-outline'} color={color} />
             ),
           }}
-      />
+      /> */}
         
     </Tabs>
   );

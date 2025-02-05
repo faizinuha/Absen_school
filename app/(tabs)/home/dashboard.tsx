@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import ProfileScreen from '../explore';
 
 const Welcome = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/images/robot_absen.png')} // Ubah path sesuai dengan lokasi gambar Anda
+        source={require('@/assets/images/absen.jpg')} // Ubah path sesuai dengan lokasi gambar Anda
         style={styles.profileImage}
       />
-      <Text style={styles.text}>Selamat Datang di Aplikasi Keluarga!</Text>
+      <Text style={styles.text}>Selamat Datang di Aplikasi AbsenSekolah!</Text>
     </View>
   );
 };

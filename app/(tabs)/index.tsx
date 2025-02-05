@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, Alert } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import ProfileScreen from "./explore";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
 // Definisikan tipe untuk absen siswa
 interface StudentAttendance {
@@ -11,10 +11,10 @@ interface StudentAttendance {
   status: string;
   description?: string; // optional untuk alasan izin/sakit
   date: string;
+  image?: string; // Tambahkan image untuk menampilkan gambar izin
 }
 
 export default function SchoolAttendanceScreen() {
-  // Data manual untuk absensi siswa
   const [attendanceList, setAttendanceList] = useState<StudentAttendance[]>([
     {
       name: "Ahmad",
@@ -37,8 +37,26 @@ export default function SchoolAttendanceScreen() {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Fungsi untuk mengambil data izin dari AsyncStorage
+  const fetchData = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem("dataizin");
+      if (storedData !== null) {
+        const parsedData = JSON.parse(storedData);
+        setAttendanceList((prevAttendanceList) => [
+          ...prevAttendanceList,
+          ...parsedData,
+        ]);
+      }
+    } catch (error) {
+      setErrorMessage("Gagal mengambil data izin");
+      Alert.alert("Error", "Gagal mengambil data izin");
+    }
+  };
+
+  // Ambil data izin saat komponen dimuat
   useEffect(() => {
-    setErrorMessage(null); // Tidak ada error untuk saat ini
+    fetchData();
   }, []);
 
   // Hitung total kehadiran, izin, sakit, dan alfa
@@ -59,18 +77,16 @@ export default function SchoolAttendanceScreen() {
     <ParallaxScrollView>
       {/* Gambar Header */}
       <Image
-        source={require("@/assets/images/smk_al_ahzah.jpeg")} // Perbaiki jalur sesuai struktur proyek Anda
+        source={require("@/assets/images/smk_al_ahzah.jpeg")} 
         style={styles.headerImage}
         resizeMode="cover"
       />
-      {/* Gambar absensi siswa */}
+      {/* Kotak-kotak fitur untuk status absensi */}
       <ThemedView style={styles.header}>
-      {/* <Image source={require('@/assets/images/profile.png')} style={styles.headerImage} /> */}
         <ThemedText type="title" style={styles.headerTitle}>
           Absensi Sekolah
         </ThemedText>
 
-        {/* Kotak-kotak fitur untuk status absensi */}
         <View style={styles.featureBoxContainer}>
           <View style={styles.featureBox}>
             <Text style={styles.featureText}>Hadir</Text>
@@ -86,6 +102,7 @@ export default function SchoolAttendanceScreen() {
             <Text style={styles.featureText}>Sakit</Text>
             <Text style={styles.featureValue}>{totalSakit}</Text>
           </View>
+
           <View style={styles.featureBox}>
             <Text style={styles.featureText}>Alfa</Text>
             <Text style={styles.featureValue}>{totalAlfa}</Text>
@@ -111,6 +128,12 @@ export default function SchoolAttendanceScreen() {
                 </Text>
               )}
               <Text style={styles.studentInfo}>Tanggal: {student.date}</Text>
+              {student.image && (
+                <Image
+                  source={{ uri: student.image }}
+                  style={styles.imagePreview} 
+                />
+              )}
             </View>
           ))
         ) : (
@@ -122,98 +145,68 @@ export default function SchoolAttendanceScreen() {
 }
 
 const styles = StyleSheet.create({
-  // Gaya untuk gambar header
   headerImage: {
-    width: "100%", // Ganti ke 100% untuk sesuai dengan lebar kontainer
-    height: 50, // Atur tinggi gambar sesuai kebutuhan
-    resizeMode: "cover", // Agar gambar tidak terdistorsi
-    borderRadius: 20, // Jarak radius gambar header
-    shadowColor: "#000", // Warna bayangan
-    shadowOffset: { width: 0, height: 2 }, // Offset bayangan
-    shadowOpacity: 0.1, // Opacity bayangan
-    shadowRadius: 100, // Radius bayangan
-    elevation: 3, // Untuk Android
+    width: "100%",
+    height: 200,
+    borderRadius: 20,
   },
-
   header: {
-    right: 10,
-    paddingHorizontal: 22, // Padding horizontal
-    paddingVertical: 22, // Padding vertikal
-    width: "109%", // Lebar 100% dari kontainer induk
-    backgroundColor: "#000", // Warna hitam untuk header
-    borderRadius: 15 | 16 | 11,
+    padding: 20,
     alignItems: "center",
-    marginBottom: 10, // Jarak bawah dari header ke konten lainnya
   },
-
   headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#fff",
-    marginBottom: 10,
+    marginBottom: 20,
   },
-
-  // Kotak fitur
   featureBoxContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: "120%",
-    padding: 10,
-    marginTop: 20,
+    width: "100%",
+    marginBottom: 20,
   },
   featureBox: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 15,
-    width: "20%",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 3, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
-    margin: 10,
-    gap: 0,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: "#f0f0f0",
   },
   featureText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: "#333",
+    fontSize: 18,
   },
   featureValue: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "bold",
   },
-
   attendanceContainer: {
-    paddingHorizontal: 20,
+    padding: 20,
   },
   studentCard: {
-    padding: 15,
-    backgroundColor: "#f8f9fa",
-    marginVertical: 10,
-    borderRadius: 15,
+    marginBottom: 20,
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    shadowRadius: 8,
   },
   studentName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 10,
-    color: "#333",
   },
   studentInfo: {
-    fontSize: 15,
-    color: "#555",
-    marginBottom: 5,
+    fontSize: 16,
+    marginTop: 5,
+  },
+  imagePreview: {
+    width: 100,
+    height: 100,
+    marginTop: 10,
+    borderRadius: 8,
   },
   errorText: {
-    color: "red",
-    textAlign: "center",
-    marginVertical: 10,
+    backgroundColor: "#3F74CA",
   },
 });
+                    
