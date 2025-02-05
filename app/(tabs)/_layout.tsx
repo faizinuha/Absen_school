@@ -28,15 +28,6 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-          name="home/dashboard"
-          options={{
-            title: 'dashboards',
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon name={focused ? 'settings-sharp' : 'settings-outline'} color={color} />
-            ),
-          }}
-      />
-      <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
@@ -45,6 +36,15 @@ export default function TabLayout() {
           ),
         }}
       />
+        <Tabs.Screen
+            name="home/dashboard"
+            options={{
+              title: 'dashboards',
+              tabBarIcon: ({ color, focused }) => (
+                <TabBarIcon name={focused ? 'settings-sharp' : 'settings-outline'} color={color} />
+              ),
+            }}
+        />
       <Tabs.Screen
         name="Addicome"
         options={{
@@ -63,7 +63,7 @@ export default function TabLayout() {
             ),
           }}
       />
-        {/* <Tabs.Screen
+        <Tabs.Screen
           name="setting/settings"
           options={{
             title: 'settings',
@@ -71,8 +71,7 @@ export default function TabLayout() {
               <TabBarIcon name={focused ? 'settings-sharp' : 'settings-outline'} color={color} />
             ),
           }}
-      /> */}
-        
+      />
     </Tabs>
   );
 }

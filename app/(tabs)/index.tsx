@@ -1,212 +1,99 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Image, Alert } from "react-native";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
-// Definisikan tipe untuk absen siswa
-interface StudentAttendance {
-  name: string;
-  status: string;
-  description?: string; // optional untuk alasan izin/sakit
-  date: string;
-  image?: string; // Tambahkan image untuk menampilkan gambar izin
-}
-
-export default function SchoolAttendanceScreen() {
-  const [attendanceList, setAttendanceList] = useState<StudentAttendance[]>([
-    {
-      name: "Ahmad",
-      status: "Hadir",
-      date: "2024-09-01",
-    },
-    {
-      name: "Budi",
-      status: "Sakit",
-      description: "Keperluan keluarga",
-      date: "2024-09-01",
-    },
-    {
-      name: "Citra",
-      status: "Sakit",
-      description: "Demam",
-      date: "2024-09-01",
-    },
-  ]);
-
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Fungsi untuk mengambil data izin dari AsyncStorage
-  const fetchData = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem("dataizin");
-      if (storedData !== null) {
-        const parsedData = JSON.parse(storedData);
-        setAttendanceList((prevAttendanceList) => [
-          ...prevAttendanceList,
-          ...parsedData,
-        ]);
-      }
-    } catch (error) {
-      setErrorMessage("Gagal mengambil data izin");
-      Alert.alert("Error", "Gagal mengambil data izin");
-    }
-  };
-
-  // Ambil data izin saat komponen dimuat
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Hitung total kehadiran, izin, sakit, dan alfa
-  const totalHadir = attendanceList.filter(
-    (student) => student.status === "Hadir"
-  ).length;
-  const totalIzin = attendanceList.filter(
-    (student) => student.status === "Izin"
-  ).length;
-  const totalSakit = attendanceList.filter(
-    (student) => student.status === "Sakit"
-  ).length;
-  const totalAlfa = attendanceList.filter(
-    (student) => student.status === "Alfa"
-  ).length;
-
+const Welcome = () => {
   return (
-    <ParallaxScrollView>
-      {/* Gambar Header */}
+    <View style={styles.container}>
       <Image
-        source={require("@/assets/images/smk_al_ahzah.jpeg")} 
-        style={styles.headerImage}
-        resizeMode="cover"
+        source={require('@/assets/images/absen.jpg')} // Ubah path sesuai dengan lokasi gambar Anda
+        style={styles.profileImage}
       />
-      {/* Kotak-kotak fitur untuk status absensi */}
-      <ThemedView style={styles.header}>
-        <ThemedText type="title" style={styles.headerTitle}>
-          Absensi Sekolah
-        </ThemedText>
+      <Text style={styles.text}>Welcome to Absen Application</Text>
+      <Text style={styles.subText}>SMK Al Azhar</Text>
 
-        <View style={styles.featureBoxContainer}>
-          <View style={styles.featureBox}>
-            <Text style={styles.featureText}>Hadir</Text>
-            <Text style={styles.featureValue}>{totalHadir}</Text>
-          </View>
+      {/* Deskripsi aplikasi */}
+      <View style={styles.descriptionContainer}>
+        <Text style={styles.descriptionText}>Aplikasi Absen untuk memudahkan pencatatan kehadiran siswa di SMK Al Azhar.</Text>
+      </View>
 
-          <View style={styles.featureBox}>
-            <Text style={styles.featureText}>Izin</Text>
-            <Text style={styles.featureValue}>{totalIzin}</Text>
-          </View>
+      {/* Tombol untuk aksi selanjutnya */}
+      <TouchableOpacity style={styles.button} onPress={() => alert('Navigating to the next screen')}>
+        <Text style={styles.buttonText}>Get Started</Text>
+      </TouchableOpacity>
 
-          <View style={styles.featureBox}>
-            <Text style={styles.featureText}>Sakit</Text>
-            <Text style={styles.featureValue}>{totalSakit}</Text>
-          </View>
-
-          <View style={styles.featureBox}>
-            <Text style={styles.featureText}>Alfa</Text>
-            <Text style={styles.featureValue}>{totalAlfa}</Text>
-          </View>
-        </View>
-      </ThemedView>
-
-      {errorMessage && (
-        <View>
-          <Text style={styles.errorText}>{errorMessage}</Text>
-        </View>
-      )}
-
-      <ThemedView style={styles.attendanceContainer}>
-        {attendanceList.length > 0 ? (
-          attendanceList.map((student, index) => (
-            <View key={index} style={styles.studentCard}>
-              <Text style={styles.studentName}>{student.name}</Text>
-              <Text style={styles.studentInfo}>Status: {student.status}</Text>
-              {student.description && (
-                <Text style={styles.studentInfo}>
-                  Alasan: {student.description}
-                </Text>
-              )}
-              <Text style={styles.studentInfo}>Tanggal: {student.date}</Text>
-              {student.image && (
-                <Image
-                  source={{ uri: student.image }}
-                  style={styles.imagePreview} 
-                />
-              )}
-            </View>
-          ))
-        ) : (
-          <Text>Belum ada data absensi.</Text>
-        )}
-      </ThemedView>
-    </ParallaxScrollView>
+      <TouchableOpacity style={styles.secondaryButton} onPress={() => alert('Opening Help')}>
+        <Text style={styles.secondaryButtonText}>Need Help?</Text>
+      </TouchableOpacity>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  headerImage: {
-    width: "100%",
-    height: 200,
-    borderRadius: 20,
-  },
-  header: {
-    padding: 20,
-    alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  featureBoxContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    marginBottom: 20,
-  },
-  featureBox: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: "#f0f0f0",
-  },
-  featureText: {
-    fontSize: 18,
-  },
-  featureValue: {
-    fontSize: 22,
-    fontWeight: "bold",
-  },
-  attendanceContainer: {
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f8ff', // Warna latar belakang lembut, memberikan nuansa sekolah
     padding: 20,
   },
-  studentCard: {
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     marginBottom: 20,
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
+    borderWidth: 3,
+    borderColor: '#2e6f96', // Tambahkan border untuk gambar profil
+  },
+  text: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2e6f96', // Warna biru sekolah yang elegan
+    marginBottom: 10,
+  },
+  subText: {
+    fontSize: 20,
+    fontStyle: 'italic',
+    color: '#2e6f96', // Warna biru untuk kesan profesional
+    marginBottom: 20,
+  },
+  descriptionContainer: {
+    backgroundColor: '#ffffff',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  studentName: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  studentInfo: {
+  descriptionText: {
     fontSize: 16,
-    marginTop: 5,
+    color: '#333',
+    textAlign: 'center',
   },
-  imagePreview: {
-    width: 100,
-    height: 100,
-    marginTop: 10,
+  button: {
+    backgroundColor: '#2e6f96',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
     borderRadius: 8,
+    marginBottom: 10,
   },
-  errorText: {
-    backgroundColor: "#3F74CA",
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  secondaryButton: {
+    paddingVertical: 10,
+  },
+  secondaryButtonText: {
+    color: '#2e6f96',
+    fontSize: 16,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
 });
-                    
+
+export default Welcome;
