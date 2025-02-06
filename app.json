@@ -1,25 +1,20 @@
 {
   "expo": {
-    "name": "Keluarga",
-    "slug": "Keluarga",
-    "version": "1.2.0",
+    "name": "Absen_school",
+    "slug": "Absen_school",
+    "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/profile.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/profile.png",
-      "resizeMode": "contain",
-      "BorderRadius": "20px",
-      "backgroundColor": "#ffffff"
-    },
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#000"
+        "backgroundColor": "#ffffff"
       }
     },
     "web": {
@@ -28,7 +23,16 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

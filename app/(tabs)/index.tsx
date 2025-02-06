@@ -1,99 +1,74 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Platform } from 'react-native';
 
-const Welcome = () => {
+import { HelloWave } from '@/components/HelloWave';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Image
-        source={require('@/assets/images/absen.jpg')} // Ubah path sesuai dengan lokasi gambar Anda
-        style={styles.profileImage}
-      />
-      <Text style={styles.text}>Welcome to Absen Application</Text>
-      <Text style={styles.subText}>SMK Al Azhar</Text>
-
-      {/* Deskripsi aplikasi */}
-      <View style={styles.descriptionContainer}>
-        <Text style={styles.descriptionText}>Aplikasi Absen untuk memudahkan pencatatan kehadiran siswa di SMK Al Azhar.</Text>
-      </View>
-
-      {/* Tombol untuk aksi selanjutnya */}
-      <TouchableOpacity style={styles.button} onPress={() => alert('Navigating to the next screen')}>
-        <Text style={styles.buttonText}>Get Started</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.secondaryButton} onPress={() => alert('Opening Help')}>
-        <Text style={styles.secondaryButtonText}>Need Help?</Text>
-      </TouchableOpacity>
-    </View>
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerImage={
+        <Image
+          source={require('@/assets/images/partial-react-logo.png')}
+          style={styles.reactLogo}
+        />
+      }>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Welcome!</ThemedText>
+        <HelloWave />
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText>
+          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
+          Press{' '}
+          <ThemedText type="defaultSemiBold">
+            {Platform.select({
+              ios: 'cmd + d',
+              android: 'cmd + m',
+              web: 'F12'
+            })}
+          </ThemedText>{' '}
+          to open developer tools.
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
+        <ThemedText>
+          Tap the Explore tab to learn more about what's included in this starter app.
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <ThemedText>
+          When you're ready, run{' '}
+          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
+          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
+          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
+          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+        </ThemedText>
+      </ThemedView>
+    </ParallaxScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  titleContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f8ff', // Warna latar belakang lembut, memberikan nuansa sekolah
-    padding: 20,
+    gap: 8,
   },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 20,
-    borderWidth: 3,
-    borderColor: '#2e6f96', // Tambahkan border untuk gambar profil
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
   },
-  text: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2e6f96', // Warna biru sekolah yang elegan
-    marginBottom: 10,
-  },
-  subText: {
-    fontSize: 20,
-    fontStyle: 'italic',
-    color: '#2e6f96', // Warna biru untuk kesan profesional
-    marginBottom: 20,
-  },
-  descriptionContainer: {
-    backgroundColor: '#ffffff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  descriptionText: {
-    fontSize: 16,
-    color: '#333',
-    textAlign: 'center',
-  },
-  button: {
-    backgroundColor: '#2e6f96',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  secondaryButton: {
-    paddingVertical: 10,
-  },
-  secondaryButtonText: {
-    color: '#2e6f96',
-    fontSize: 16,
-    textAlign: 'center',
-    textDecorationLine: 'underline',
+  reactLogo: {
+    height: 178,
+    width: 290,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
   },
 });
-
-export default Welcome;

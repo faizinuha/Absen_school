@@ -1,131 +1,109 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Text, View } from 'react-native';
+import { StyleSheet, Image, Platform } from 'react-native';
+
 import { Collapsible } from '@/components/Collapsible';
+import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 
-export default function ProfileScreen() {
+export default function TabTwoScreen() {
   return (
-    <ParallaxScrollView>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">User Profile</ThemedText>
-      </ThemedView>
-      
-      <View style={styles.profileInfo}>
-        <Image
-          source={require('@/assets/images/profile.png')}
-          style={styles.profileImage}
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerImage={
+        <IconSymbol
+          size={310}
+          color="#808080"
+          name="chevron.left.forwardslash.chevron.right"
+          style={styles.headerImage}
         />
-        <View style={styles.profileDetails}>
-          <Text style={styles.username}>John Doe</Text>
-          <Text style={styles.email}>johndoe@example.com</Text>
-        </View>
-      </View>
-      
-      <ThemedText>
-        This is your profile. You can view and edit your information here.
-      </ThemedText>
-      
-      <Collapsible title="Personal Information">
+      }>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Explore</ThemedText>
+      </ThemedView>
+      <ThemedText>This app includes example code to help you get started.</ThemedText>
+      <Collapsible title="File-based routing">
         <ThemedText>
-          Name: John Doe
+          This app has two screens:{' '}
+          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
+          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
         </ThemedText>
         <ThemedText>
-          Email: johndoe@example.com
+          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
+          sets up the tab navigator.
+        </ThemedText>
+        <ExternalLink href="https://docs.expo.dev/router/introduction">
+          <ThemedText type="link">Learn more</ThemedText>
+        </ExternalLink>
+      </Collapsible>
+      <Collapsible title="Android, iOS, and web support">
+        <ThemedText>
+          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
+          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
         </ThemedText>
       </Collapsible>
-
-      <Collapsible title="Settings">
+      <Collapsible title="Images">
         <ThemedText>
-          You can change your preferences and update settings from this section.
+          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
+          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
+          different screen densities
         </ThemedText>
+        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
+        <ExternalLink href="https://reactnative.dev/docs/images">
+          <ThemedText type="link">Learn more</ThemedText>
+        </ExternalLink>
+      </Collapsible>
+      <Collapsible title="Custom fonts">
+        <ThemedText>
+          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
+          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
+            custom fonts such as this one.
+          </ThemedText>
+        </ThemedText>
+        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
+          <ThemedText type="link">Learn more</ThemedText>
+        </ExternalLink>
+      </Collapsible>
+      <Collapsible title="Light and dark mode components">
+        <ThemedText>
+          This template has light and dark mode support. The{' '}
+          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
+          what the user's current color scheme is, and so you can adjust UI colors accordingly.
+        </ThemedText>
+        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
+          <ThemedText type="link">Learn more</ThemedText>
+        </ExternalLink>
+      </Collapsible>
+      <Collapsible title="Animations">
+        <ThemedText>
+          This template includes an example of an animated component. The{' '}
+          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
+          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
+          library to create a waving hand animation.
+        </ThemedText>
+        {Platform.select({
+          ios: (
+            <ThemedText>
+              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
+              component provides a parallax effect for the header image.
+            </ThemedText>
+          ),
+        })}
       </Collapsible>
     </ParallaxScrollView>
   );
 }
- 
-//  fungsi seetting next up
-// <Collapsible title="Settings">
-// <TouchableOpacity onPress={() => setShowInput(!showInput)} style={styles.button}>
-//   <Text style={styles.buttonText}>Toggle Input</Text>
-// </TouchableOpacity>
 
-// {showInput && (
-//   <View style={styles.settingsContainer}>
-//     <Text style={styles.label}>Masukan Nomer</Text>
-//     <TextInput
-//       style={styles.input}
-//       value={income}
-//       onChangeText={setIncome}
-//       placeholder="Masukkan Nomer"
-//       keyboardType="numeric"
-//     />
-//   </View>
-// )}
-// </Collapsible>
 const styles = StyleSheet.create({
+  headerImage: {
+    color: '#808080',
+    bottom: -90,
+    left: -35,
+    position: 'absolute',
+  },
   titleContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-    paddingVertical: 20,
-    backgroundColor: '#fff', // Warna latar belakang header
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5, // Efek bayangan untuk Android
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    alignSelf: 'center',
-    marginBottom: 20,
-    borderWidth: 2,
-    borderColor: '#fff', // Warna border gambar profil
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  profileInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 20,
-  },
-  profileDetails: {
-    marginLeft: 15,
-  },
-  username: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333', // Warna nama pengguna
-  },
-  email: {
-    fontSize: 10,
-    textDecorationLine: "underline",
-    color: '#808080',
-  },
-  introText: {
-    fontSize: 16,
-    marginHorizontal: 20,
-    textAlign: 'center',
-    color: '#444', // Warna teks pengantar
-  },
-  collapsible: {
-    marginVertical: 10,
-    backgroundColor: '#f9f9f9', // Latar belakang untuk collapsible
-    borderRadius: 10,
-    padding: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    gap: 8,
   },
 });

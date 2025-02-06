@@ -1,76 +1,44 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { Platform } from 'react-native';
 
+import { HapticTab } from '@/components/HapticTab';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
-// Hapus useColorScheme untuk dark mode secara manual
-// import { useColorScheme } from '@/hooks/useColorScheme';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  // Set default dark mode
-  const colorScheme = 'dark'; // Set ke dark mode secara manual
+  const colorScheme = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint, // Gunakan skema dark
-        tabBarStyle: {
-          backgroundColor: Colors[colorScheme].background, // Background untuk dark mode
-        },
-        headerShown: true,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: 'bold',
-        },
-        tabBarIconStyle: {
-          fontSize: 24,
-        },
-      }}
-    >
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        headerShown: false,
+        tabBarButton: HapticTab,
+        tabBarBackground: TabBarBackground,
+        tabBarStyle: Platform.select({
+          ios: {
+            // Use a transparent background on iOS to show the blur effect
+            position: 'absolute',
+          },
+          default: {},
+        }),
+      }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-        <Tabs.Screen
-            name="home/dashboard"
-            options={{
-              title: 'dashboards',
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon name={focused ? 'settings-sharp' : 'settings-outline'} color={color} />
-              ),
-            }}
-        />
       <Tabs.Screen
-        name="Addicome"
+        name="explore"
         options={{
-          title: 'Izin',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'add-sharp' : 'add-circle-outline'} color={color} />
-          ),
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
-      />
-        <Tabs.Screen
-          name="explore"
-          options={{
-            title: 'Profile',
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon name={focused ? 'star-outline' : 'star-outline'} color={color} />
-            ),
-          }}
-      />
-        <Tabs.Screen
-          name="setting/settings"
-          options={{
-            title: 'settings',
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon name={focused ? 'settings-sharp' : 'settings-outline'} color={color} />
-            ),
-          }}
       />
     </Tabs>
   );
