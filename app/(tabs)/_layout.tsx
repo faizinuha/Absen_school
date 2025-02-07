@@ -13,7 +13,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: activeColor,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: 'green',
+          backgroundColor: 'black',
           paddingBottom: 10, // Tambah padding biar gampang diklik
           height: 60, // Perbesar ukuran tab
         },
@@ -24,7 +24,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-sharp'} color={color} />
+            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
         }}
       />
@@ -33,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'grid' : 'grid-outline'} color={color} />
+            <TabBarIcon name={focused ? 'analytics' : 'analytics-outline'} color={color} />
           ),
         }}
       />
@@ -42,7 +42,7 @@ export default function TabLayout() {
         options={{
           title: 'Izin',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'grid' : 'grid-outline'} color={color} />
+            <TabBarIcon name={focused ? 'checkmark-circle' : 'checkmark-circle-outline'} color={color} />
           ),
         }}
       />
