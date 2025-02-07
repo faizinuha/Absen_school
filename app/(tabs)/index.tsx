@@ -5,18 +5,20 @@ const Welcome = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/images/absen.jpg')} // Ubah path sesuai dengan lokasi gambar Anda
+        source={require('@/assets/images/absen.jpg')} // Pastikan path gambar benar
         style={styles.profileImage}
       />
-      <Text style={styles.text}>Welcome to Absen Application</Text>
-      <Text style={styles.subText}>SMK Al Azhar</Text>
+      <Text style={styles.title}>Welcome to Absen Application</Text>
+      <Text style={styles.subtitle}>SMK Al Azhar</Text>
 
       {/* Deskripsi aplikasi */}
       <View style={styles.descriptionContainer}>
-        <Text style={styles.descriptionText}>Aplikasi Absen untuk memudahkan pencatatan kehadiran siswa di SMK Al Azhar.</Text>
+        <Text style={styles.descriptionText}>
+          Aplikasi absen untuk memudahkan pencatatan kehadiran siswa di SMK Al Azhar.
+        </Text>
       </View>
 
-      {/* Tombol untuk aksi selanjutnya */}
+      {/* Tombol aksi */}
       <TouchableOpacity style={styles.button} onPress={() => alert('Navigating to the next screen')}>
         <Text style={styles.buttonText}>Get Started</Text>
       </TouchableOpacity>
@@ -33,39 +35,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f8ff', // Warna latar belakang lembut, memberikan nuansa sekolah
+    backgroundColor: '#e3f2fd', // Warna lebih soft dan modern
     padding: 20,
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     marginBottom: 20,
     borderWidth: 3,
-    borderColor: '#2e6f96', // Tambahkan border untuk gambar profil
+    borderColor: '#1565c0', // Biru lebih elegan
   },
-  text: {
+  title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2e6f96', // Warna biru sekolah yang elegan
-    marginBottom: 10,
+    color: '#0d47a1', // Biru lebih solid
+    marginBottom: 8,
+    textAlign: 'center',
   },
-  subText: {
+  subtitle: {
     fontSize: 20,
     fontStyle: 'italic',
-    color: '#2e6f96', // Warna biru untuk kesan profesional
+    color: '#1565c0',
     marginBottom: 20,
+    textAlign: 'center',
   },
   descriptionContainer: {
     backgroundColor: '#ffffff',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 6,
   },
   descriptionText: {
     fontSize: 16,
@@ -73,11 +77,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#2e6f96',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: '#1565c0',
+    paddingVertical: 14,
+    paddingHorizontal: 35,
+    borderRadius: 10,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 4,
   },
   buttonText: {
     color: '#fff',
@@ -89,7 +98,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   secondaryButtonText: {
-    color: '#2e6f96',
+    color: '#0d47a1',
     fontSize: 16,
     textAlign: 'center',
     textDecorationLine: 'underline',

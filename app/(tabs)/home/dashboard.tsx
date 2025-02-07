@@ -5,6 +5,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
+// Definisikan tipe untuk absen siswa
 interface StudentAttendance {
   name: string;
   status: string;
@@ -13,14 +14,13 @@ interface StudentAttendance {
   image?: string; // Tambahkan image untuk menampilkan gambar izin
 }
 
-// detail
-
 export default function SchoolAttendanceScreen() {
   const [attendanceList, setAttendanceList] = useState<StudentAttendance[]>([
     {
       name: "Ahmad",
       status: "Hadir",
       date: "2024-09-01",
+      description: "Test",
     },
     {
       name: "Budi",
@@ -35,9 +35,8 @@ export default function SchoolAttendanceScreen() {
       date: "2024-09-01",
     },
   ]);
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-
 
   // Fungsi untuk mengambil data izin dari AsyncStorage
   const fetchData = async () => {
@@ -56,10 +55,12 @@ export default function SchoolAttendanceScreen() {
     }
   };
 
+  // Ambil data izin saat komponen dimuat
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Hitung total kehadiran, izin, sakit, dan alfa
   const totalHadir = attendanceList.filter(
     (student) => student.status === "Hadir"
   ).length;
@@ -71,6 +72,9 @@ export default function SchoolAttendanceScreen() {
   ).length;
   const totalAlfa = attendanceList.filter(
     (student) => student.status === "Alfa"
+  ).length;
+  const TotalAcara = attendanceList.filter(
+    (student) => student.status === "Acara"
   ).length;
 
   return (
@@ -84,12 +88,6 @@ export default function SchoolAttendanceScreen() {
       }
       headerBackgroundColor={{ dark: "#000", light: "#fff" }}
     >
-      {/* Gambar Header */}
-      <Image
-        source={require("@/assets/images/smk_al_ahzah.jpeg")}
-        style={styles.headerImage}
-        resizeMode="cover"
-      />
       {/* Kotak-kotak fitur untuk status absensi */}
       <ThemedView style={styles.header}>
         <ThemedText type="title" style={styles.headerTitle}>
@@ -116,6 +114,10 @@ export default function SchoolAttendanceScreen() {
             <Text style={styles.featureText}>Alfa</Text>
             <Text style={styles.featureValue}>{totalAlfa}</Text>
           </View>
+          <View style={styles.featureBox}>
+            <Text style={styles.featureText}>Acara</Text>
+            <Text style={styles.featureValue}>{TotalAcara}</Text>
+          </View>
         </View>
       </ThemedView>
 
@@ -140,7 +142,7 @@ export default function SchoolAttendanceScreen() {
               {student.image && (
                 <Image
                   source={{ uri: student.image }}
-                  style={styles.imagePreview}
+                  style={styles.imagePreview} 
                 />
               )}
             </View>
@@ -151,7 +153,6 @@ export default function SchoolAttendanceScreen() {
       </ThemedView>
     </ParallaxScrollView>
   );
-
 }
 
 const styles = StyleSheet.create({
@@ -219,3 +220,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#3F74CA",
   },
 });
+                    
