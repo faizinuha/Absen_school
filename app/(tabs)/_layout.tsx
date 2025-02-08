@@ -4,7 +4,7 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 
 export default function TabLayout() {
-  const colorScheme = 'dark'; // Set ke dark mode secara manual
+  const colorScheme = 'white'; // Set ke dark mode secara manual
   const activeColor = Colors.dark.tint; // Warna aktif
 
   return (
@@ -13,7 +13,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: activeColor,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: 'black',
+          backgroundColor: 'dark',
           paddingBottom: 10, // Tambah padding biar gampang diklik
           height: 60, // Perbesar ukuran tab
         },

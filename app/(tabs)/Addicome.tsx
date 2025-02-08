@@ -3,107 +3,163 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   Alert,
   TouchableOpacity,
   StyleSheet,
+  Image,
+  ActivityIndicator,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
 
-export default function AddLeave() {
+export default function AddAttendance() {
   const [name, setName] = useState("");
-  const [status, setStatus] = useState("Sakit");
+  const [kehadiran, setKehadiran] = useState("Hadir");
   const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [location, setLocation] = useState<Location.LocationObjectCoords | null>(null);
-  const [hasPermission, setHasPermission] = useState(false);
+  const [location, setLocation] =
+    useState<Location.LocationObjectCoords | null>(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
 
-  const statusOptions = ["Sakit", "Izin Keluarga", "Acara Penting"];
-
-  // Koordinat area sekolah (latitude, longitude)
-  const schoolArea = {
-    latitude: -8.30433,
-    longitude: 114.1378014,
-    radius: 200,  // radius dalam meter
-  };
+  const kehadiranOptions = ["Hadir", "Sakit", "Izin Keluarga"];
 
   useEffect(() => {
-    (async () => {
-      // Meminta izin lokasi
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      setHasPermission(status === "granted");
-
-      if (status === "granted") {
-        // Mendapatkan lokasi pengguna
-        const location = await Location.getCurrentPositionAsync({});
-        setLocation(location.coords);
-      }
-    })();
+    checkLocationPermission();
   }, []);
 
-  const isInSchoolArea = () => {
-    if (!location) return false;
-
-    const toRad = (value: number) => (value * Math.PI) / 180;
-    const R = 6371e3; // Earth's radius in meters
-    const dLat = toRad(schoolArea.latitude - location.latitude);
-    const dLon = toRad(schoolArea.longitude - location.longitude);
-    const lat1 = toRad(location.latitude);
-    const lat2 = toRad(schoolArea.latitude);
-
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    const distance = R * c;
-
-    return distance <= schoolArea.radius;
+  const checkLocationPermission = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status === "granted") {
+      setHasPermission(true);
+      getLocation();
+    } else {
+      setHasPermission(false);
+      Alert.alert(
+        "Izin Lokasi Diperlukan",
+        "Silakan izinkan akses lokasi di pengaturan perangkat Anda."
+      );
+    }
   };
 
+  const getLocation = async () => {
+    setLoadingLocation(true);
+  
+    if (Platform.OS === "web") {
+      if (!navigator.geolocation) {
+        Alert.alert("Error", "Geolocation tidak didukung di browser ini.");
+        setLoadingLocation(false);
+        return;
+      }
+  
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            altitude: position.coords.altitude || 0,
+            accuracy: position.coords.accuracy || 0,
+            altitudeAccuracy: position.coords.altitudeAccuracy || 0,
+            heading: position.coords.heading || 0,
+            speed: position.coords.speed || 0,
+          });
+          setLoadingLocation(false);
+        },
+        (error) => {
+          Alert.alert(
+            "Akses Lokasi Ditolak",
+            "Aktifkan lokasi di pengaturan browser dan coba lagi."
+          );
+          setLoadingLocation(false);
+        }
+      );
+    } else {
+      try {
+        const loc = await Location.getCurrentPositionAsync({});
+        setLocation(loc.coords);
+      } catch (error) {
+        Alert.alert("Error", "Gagal mendapatkan lokasi.");
+      } finally {
+        setLoadingLocation(false);
+      }
+    }
+  };
+  
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setPhoto(result.assets[0].uri);
+    }
+  };
+
+  const validateForm = () => {
+    if (!name.trim()) {
+      Alert.alert("Error", "Silakan isi nama terlebih dahulu.");
+      return false;
+    }
+  
+    if (!location) {
+      Alert.alert(
+        "Error",
+        "Lokasi tidak tersedia. Silakan coba lagi atau aktifkan GPS."
+      );
+      return false;
+    }
+  
+    if ((kehadiran === "Sakit" || kehadiran === "Izin Keluarga") && !photo) {
+      Alert.alert("Error", "Silakan unggah bukti foto untuk absen ini.");
+      return false;
+    }
+  
+    return true;
+  };
+  
   const handleSave = async () => {
-    if (!name || !location) {
-      Alert.alert("Error", "Silakan isi nama dan pastikan Anda berada di area sekolah.");
+    if (!validateForm()) {
       return;
     }
-
-    if (!isInSchoolArea()) {
-      Alert.alert("Error", "Anda tidak berada di area sekolah, absensi tidak dapat dilakukan.");
-      return;
-    }
-
-    const newLeave = {
+  
+    const newAttendance = {
       name,
-      status,
+      kehadiran,
       date: date.toISOString(),
-      location: location,
+      location,
+      photo,
     };
-
+  
     try {
-      const storedData = await AsyncStorage.getItem("dataizin");
+      const storedData = await AsyncStorage.getItem("dataKehadiran");
       const data = storedData ? JSON.parse(storedData) : [];
-      data.push(newLeave);
-      await AsyncStorage.setItem("dataizin", JSON.stringify(data));
-      Alert.alert("Sukses", "Data izin berhasil disimpan.");
+      data.push(newAttendance);
+      await AsyncStorage.setItem("dataKehadiran", JSON.stringify(data));
+      Alert.alert("Sukses", "Data kehadiran berhasil disimpan.");
       resetForm();
     } catch (error) {
-      Alert.alert("Error", "Gagal menyimpan data");
+      Alert.alert("Error", "Gagal menyimpan data, silakan coba lagi.");
     }
   };
+  
 
   const resetForm = () => {
     setName("");
-    setStatus("Sakit");
+    setKehadiran("Hadir");
     setDate(new Date());
     setLocation(null);
+    setPhoto(null);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Izin Tidak Masuk Sekolah</Text>
+      <Text style={styles.title}>Form Kehadiran</Text>
 
       <Text style={styles.label}>Nama</Text>
       <TextInput
@@ -113,33 +169,41 @@ export default function AddLeave() {
         placeholder="Masukkan nama..."
       />
 
-      <Text style={styles.label}>Alasan Tidak Masuk</Text>
+      <Text style={styles.label}>Absen</Text>
       <Picker
-        selectedValue={status}
+        selectedValue={kehadiran}
         style={styles.input}
-        onValueChange={(itemValue) => setStatus(itemValue)}
+        onValueChange={(itemValue) => setKehadiran(itemValue)}
       >
-        {statusOptions.map((option, index) => (
+        {kehadiranOptions.map((option, index) => (
           <Picker.Item key={index} label={option} value={option} />
         ))}
       </Picker>
 
-      <Text style={styles.label}>Tanggal</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-        <TextInput
-          style={styles.input}
-          value={date.toLocaleDateString()}
-          placeholder="Pilih tanggal"
-          editable={false}
-        />
-      </TouchableOpacity>
+      {(kehadiran === "Sakit" || kehadiran === "Izin Keluarga") && (
+        <>
+          <Text style={styles.label}>Bukti Foto</Text>
+          <TouchableOpacity style={styles.buttonSecondary} onPress={pickImage}>
+            <Text style={styles.buttonText}>Unggah Foto</Text>
+          </TouchableOpacity>
+          {photo && <Image source={{ uri: photo }} style={styles.imagePreview} />}
+        </>
+      )}
 
       <Text style={styles.label}>Lokasi Anda</Text>
-      <TextInput
-        style={styles.input}
-        value={`Latitude: ${location ? location.latitude : ""} | Longitude: ${location ? location.longitude : ""}`}
-        editable={false}
-      />
+      {loadingLocation ? (
+        <ActivityIndicator size="small" color="#007AFF" />
+      ) : (
+        <Text style={styles.locationText}>
+          {location
+            ? `Latitude: ${location.latitude}, Longitude: ${location.longitude}`
+            : "Lokasi tidak tersedia, silakan coba lagi."}
+        </Text>
+      )}
+
+      <TouchableOpacity style={styles.buttonPrimary} onPress={getLocation}>
+        <Text style={styles.buttonText}>Ambil Lokasi</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.buttonPrimary} onPress={handleSave}>
         <Text style={styles.buttonText}>Simpan</Text>
@@ -178,15 +242,34 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "#fff",
   },
+  locationText: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 15,
+  },
   buttonPrimary: {
     backgroundColor: "#34C759",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
+    marginBottom: 10,
+  },
+  buttonSecondary: {
+    backgroundColor: "#007AFF",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 10,
   },
   buttonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  imagePreview: {
+    width: "100%",
+    height: 200,
+    marginTop: 10,
+    borderRadius: 8,
   },
 });
