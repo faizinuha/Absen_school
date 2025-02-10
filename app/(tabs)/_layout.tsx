@@ -1,66 +1,54 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
+import { Tabs } from "expo-router";
+import React from "react";
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { Colors } from "@/constants/Colors";
+import CustomTabBar from "@/components/custometabBar"; // Import custom navbar
+import {styles} from "@/style/style"; // Import custom navbar
 
 export default function TabLayout() {
-  const colorScheme = 'white'; // Set ke dark mode secara manual
-  const activeColor = Colors.dark.tint; // Warna aktif
+  const colorScheme = "dark"; // Mode gelap
+  const activeColor = Colors.dark.tint; // Warna saat aktif
 
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />} // Gunakan CustomTabBar
       screenOptions={{
-        tabBarActiveTintColor: activeColor,
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: 'dark',
-          paddingBottom: 10, // Tambah padding biar gampang diklik
-          height: 60, // Perbesar ukuran tab
-        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon name={focused ? "home" : "home-outline"} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="home/dashboard"
+        name="dashboard"
         options={{
-          title: 'Dashboard',
+          title: "Dashboard",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'analytics' : 'analytics-outline'} color={color} />
+            <TabBarIcon name={focused ? "analytics" : "analytics-outline"} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="Addicome"
         options={{
-          title: 'Izin',
+          title: "Izin",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'checkmark-circle' : 'checkmark-circle-outline'} color={color} />
+            <TabBarIcon name={focused ? "checkmark-circle" : "checkmark-circle-outline"} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Profile',
+          title: "Profile",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="setting/settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
+            <TabBarIcon name={focused ? "person" : "person-outline"} color={color} />
           ),
         }}
       />
