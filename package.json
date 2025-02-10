@@ -33,7 +33,7 @@
     "expo-location": "~18.0.5",
     "expo-router": "~4.0.17",
     "expo-sharing": "~13.0.1",
-    "expo-splash-screen": "~0.29.21",
+    "expo-splash-screen": "^0.29.21",
     "expo-status-bar": "~2.0.1",
     "expo-symbols": "~0.2.2",
     "expo-system-ui": "~4.0.8",
