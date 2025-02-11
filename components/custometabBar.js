@@ -12,7 +12,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
+      duration: 300,
       useNativeDriver: true,
     }).start();
   }, []);

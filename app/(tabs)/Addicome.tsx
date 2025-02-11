@@ -100,7 +100,7 @@ export default function AddAttendance() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Form Kehadiran</Text>
+      <Text style={styles.title}>👋Yuk Absen...</Text>
       <Text style={styles.label}>Nama</Text>
       <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Masukkan nama..." />
 
