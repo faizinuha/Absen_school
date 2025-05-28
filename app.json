@@ -4,7 +4,7 @@
     "slug": "Aplications_Absen",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/images/absen.jpg",
+    "icon": "./assets/images/absen.jpg",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "34ea3080-846f-40ae-9aa7-9c8903f16544"
+      }
+    },
+    "owner": "mahiro_ay"
   }
 }
